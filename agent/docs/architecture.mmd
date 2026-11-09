@@ -1,0 +1,23 @@
+flowchart LR
+  Client[Internal UI / business client] --> Gateway[TLS ingress + OIDC/JWT + rate limits]
+  Gateway --> API[FastAPI<br/>workspace + role auth]
+  API --> Graph[LangGraph<br/>route → retrieve → synthesize → verify]
+  Graph --> Router[Deterministic domain router]
+  Router --> Repo[Typed evidence repository<br/>tenant + active dataset filter]
+  Repo --> DB[(PostgreSQL 18<br/>evidence / versions / feedback)]
+  Graph --> Model[OpenAI Responses API<br/>structured output; model ID via env]
+  Graph --> Verifier[Citation allowlist<br/>abstain on invalid citations]
+  Verifier --> API
+  API --> Cards[Claims + source cards + limitations]
+  API --> Feedback[Feedback API<br/>accepted / edited / rejected / validate]
+  Feedback --> DB
+  Graph -. checkpoint refs .-> CP[(Postgres checkpointer pool<br/>strict JSON/msgpack serializer)]
+  Ingest[Authorized evidence ingestion] --> Stage[Staged dataset version]
+  Stage --> DB
+  Operator[Data steward approval] --> Activate[CLI activate version]
+  Activate --> DB
+
+  classDef deterministic fill:#e8f2ff,stroke:#38699a,color:#102a43;
+  classDef guarded fill:#fff4d6,stroke:#a36b00,color:#432f00;
+  class Router,Repo,Verifier,Stage,Activate deterministic;
+  class Gateway,API,Model,CP guarded;

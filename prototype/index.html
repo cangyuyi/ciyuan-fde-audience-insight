@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="收拢：面向会前决策的证据优先洞察工作台。真实请求同源 FastAPI，主张可回源、追问可续接、反馈可留痕。">
+  <title>收拢 · 会前洞察工作台</title>
+  <link rel="stylesheet" href="./styles.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到主要内容</a>
+
+  <svg class="svg-defs" aria-hidden="true" focusable="false">
+    <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 1.6 5.4L19 10l-5.4 1.6L12 17l-1.6-5.4L5 10l5.4-1.6L12 3Z"/><path d="m19 16 .7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16Z"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"/><path d="M14 3v6h6M8 13h8M8 17h5"/></symbol>
+    <symbol id="i-chat" viewBox="0 0 24 24"><path d="M20 15a3 3 0 0 1-3 3H9l-5 3v-6a3 3 0 0 1-1-2V7a3 3 0 0 1 3-3h11a3 3 0 0 1 3 3Z"/><path d="M8 9h8M8 13h5"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 24 24"><path d="m14 5 5 5M4 20l3.5-.7L20 6.8 17.2 4 4.7 16.5 4 20Z"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3v.1"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2"/></symbol>
+    <symbol id="i-print" viewBox="0 0 24 24"><path d="M7 8V3h10v5M7 17H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-3"/><path d="M7 14h10v7H7z"/></symbol>
+    <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="m10 13 4-4m-6 7-1 1a3.5 3.5 0 0 1-5-5l4-4a3.5 3.5 0 0 1 5 0m5-1 1-1a3.5 3.5 0 0 1 5 5l-4 4a3.5 3.5 0 0 1-5 0"/></symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6l-8-3Z"/><path d="m8 12 3 3 5-6"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 8a7 7 0 0 1 11.8-1L20 12M4 12l2.1 5a7 7 0 0 0 11.8-1"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12Z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  </svg>
+
+  <header class="app-header">
+    <div class="brand" aria-label="收拢，会前洞察工作台">
+      <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+      <span class="brand-name">收拢</span>
+      <span class="brand-divider" aria-hidden="true"></span>
+      <span class="brand-subtitle">会前洞察工作台</span>
+    </div>
+    <div class="header-actions">
+      <span class="api-status" id="api-status" data-state="idle"><span class="status-dot" aria-hidden="true"></span><span id="api-status-text">等待真实请求</span></span>
+      <span class="workspace-badge">工作空间 <strong>demo</strong></span>
+    </div>
+  </header>
+
+  <nav class="view-nav" aria-label="主视图">
+    <div class="view-nav-inner" role="tablist" aria-label="切换工作台与会前一页纸">
+      <button class="view-tab is-active" id="tab-workspace" type="button" role="tab" aria-selected="true" aria-controls="workspace-view" data-view="workspace">
+        <svg class="icon" aria-hidden="true"><use href="#i-chat"></use></svg>洞察工作台
+      </button>
+      <button class="view-tab" id="tab-brief" type="button" role="tab" aria-selected="false" aria-controls="brief-view" data-view="brief" tabindex="-1">
+        <svg class="icon" aria-hidden="true"><use href="#i-file"></use></svg>会前一页纸
+        <span class="tab-dot" id="brief-ready-dot" aria-label="已有会前快照"></span>
+      </button>
+    </div>
+  </nav>
+
+  <main id="main-content">
+    <section id="workspace-view" class="view-panel" role="tabpanel" aria-labelledby="tab-workspace">
+      <div class="workspace-layout">
+        <aside class="template-rail" aria-labelledby="template-title">
+          <div class="rail-heading">
+            <span class="eyebrow">START WITH A SIGNAL</span>
+            <h2 id="template-title">从一个好问题开始</h2>
+            <p>无需整理新表格，直接追问已接入的证据。</p>
+          </div>
+          <div id="template-list" class="template-list">
+            <button class="template-card" type="button" data-question="品牌A的 Gen Z 人群在曝光、互动和特定成交条件组中的占比分别是多少？这些指标能否构成转化漏斗？">
+              <span class="template-number">01</span><span class="template-copy"><strong>看清年轻人群</strong><span>Gen Z 画像与口径边界</span></span><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg>
+            </button>
+            <button class="template-card" type="button" data-question="2026年6月品牌A直播投放的整体表现如何？请说明加权ROI口径和异常记录。">
+              <span class="template-number">02</span><span class="template-copy"><strong>复盘直播效率</strong><span>ROI、消耗与异常行</span></span><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg>
+            </button>
+            <button class="template-card" type="button" data-question="产品体验中最值得会前关注的问题是什么？请给出用户原声、样本身份与验证建议。">
+              <span class="template-number">03</span><span class="template-copy"><strong>定位体验摩擦</strong><span>问题归类与用户原声</span></span><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg>
+            </button>
+            <button class="template-card" type="button" data-question="仓库问题工单和补发订单的发生率是多少？请解释订单分母，以及它能否证明退款责任。">
+              <span class="template-number">04</span><span class="template-copy"><strong>核查履约异常</strong><span>订单分母与责任边界</span></span><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg>
+            </button>
+          </div>
+          <div class="adoption-note">
+            <svg class="icon" aria-hidden="true"><use href="#i-clock"></use></svg>
+            <div><strong>不养一张新表</strong><p>会前只走 3 步：提问、核证据、做反馈。日常无需维护；仅在异常或冲突时回源复核。</p></div>
+          </div>
+        </aside>
+
+        <div class="workbench">
+          <section class="ask-panel" aria-labelledby="ask-title">
+            <div class="ask-heading">
+              <div>
+                <span class="eyebrow">EVIDENCE BEFORE OPINION</span>
+                <h1 id="ask-title">把散落的信息，收拢成能开会的答案</h1>
+              </div>
+              <button id="new-thread-button" class="text-button" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#i-plus"></use></svg>新话题</button>
+            </div>
+
+            <div id="thread-context" class="thread-context" hidden>
+              <span><svg class="icon" aria-hidden="true"><use href="#i-link"></use></svg>同一对话继续追问</span>
+              <code id="thread-id-label"></code>
+              <span id="thread-round-label" class="round-label"></span>
+            </div>
+
+            <form id="question-form" novalidate>
+              <label class="sr-only" for="question-input">输入业务问题</label>
+              <textarea id="question-input" name="question" rows="4" minlength="3" maxlength="1200" required placeholder="例如：哪些信号值得带进明天的复盘会？请区分事实、推断与建议，并给出原始证据。" aria-describedby="question-help question-error"></textarea>
+              <div class="composer-footer">
+                <div class="composer-meta"><span id="question-help">不要输入手机号等直接身份标识</span><span id="character-count" aria-live="polite">0 / 1200</span></div>
+                <button id="ask-button" class="primary-button" type="submit"><span id="ask-button-label">生成洞察</span><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></button>
+              </div>
+              <p id="question-error" class="field-error" role="alert" hidden></p>
+            </form>
+
+            <details class="connection-details">
+              <summary>本地连接设置<svg class="icon" aria-hidden="true"><use href="#i-chevron"></use></svg></summary>
+              <div class="connection-body">
+                <label for="api-key-input">X-API-Key</label>
+                <input id="api-key-input" type="password" value="local-query-token" autocomplete="off" spellcheck="false">
+                <p>本地 demo 访问令牌，<strong>不是生产认证</strong>。仅保留在当前页面内存，不写入浏览器存储；生产环境应接入企业身份网关。</p>
+              </div>
+            </details>
+          </section>
+
+          <div id="request-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+          <div id="toast-region" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+
+          <section id="loading-state" class="loading-state result-surface" aria-label="正在生成洞察" hidden>
+            <div class="loading-topline"><span class="spinner" aria-hidden="true"></span><div><strong>正在请求同源后端</strong><p id="loading-message">检索、生成与引用校验耗时取决于服务端；此处不会填入演示答案。</p></div><button id="cancel-request" class="secondary-button" type="button">取消</button></div>
+            <div class="skeleton-stack" aria-hidden="true"><span></span><span></span><span></span></div>
+          </section>
+
+          <section id="error-state" class="error-state result-surface" role="alert" hidden>
+            <span class="error-icon"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg></span>
+            <div class="error-copy"><h2>这次没有拿到可用洞察</h2><p id="error-message"></p><code id="error-detail"></code><div class="error-actions"><button id="retry-button" class="primary-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>重试原问题</button><button id="edit-question-button" class="secondary-button" type="button">修改问题</button></div><p class="error-footnote">失败时保留原问题，不展示伪造的模型结果。</p></div>
+          </section>
+
+          <section id="empty-state" class="empty-state result-surface" aria-labelledby="empty-title">
+            <div class="empty-visual" aria-hidden="true"><span class="empty-sheet sheet-one"></span><span class="empty-sheet sheet-two"></span><span class="empty-sheet sheet-three"><svg class="icon"><use href="#i-spark"></use></svg></span></div>
+            <h2 id="empty-title">先问一个会议真正关心的问题</h2>
+            <p>回答将区分观察、推断与建议，并把每条主张连回文件、工作表、字段和行号。</p>
+            <div class="empty-flow" aria-label="使用流程"><span><b>1</b>选择模板</span><i aria-hidden="true"></i><span><b>2</b>核验主张</span><i aria-hidden="true"></i><span><b>3</b>留下决策</span></div>
+          </section>
+
+          <div id="results" hidden>
+            <nav class="run-history" id="run-history" aria-label="本话题问答轮次" hidden></nav>
+            <section class="answer-section" aria-labelledby="answer-title">
+              <div class="answer-topline">
+                <div class="answer-title-wrap"><span id="answer-status" class="status-pill"></span><h2 id="answer-title">本轮洞察</h2><span id="answer-round" class="round-label"></span></div>
+                <button id="open-brief-button" class="secondary-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-file"></use></svg>收拢成会前一页纸</button>
+              </div>
+              <blockquote id="current-question" class="current-question"></blockquote>
+              <dl class="response-meta" aria-label="响应元数据">
+                <div><dt>意图</dt><dd id="meta-intent"></dd></div>
+                <div><dt>数据版本</dt><dd id="meta-dataset"></dd></div>
+                <div><dt>Run ID</dt><dd><code id="meta-run-id"></code><button id="copy-run-id" class="icon-button" type="button" aria-label="复制 Run ID"><svg class="icon" aria-hidden="true"><use href="#i-copy"></use></svg></button></dd></div>
+              </dl>
+              <div id="claims-container" class="claims-container"></div>
+            </section>
+
+            <section class="evidence-section" aria-labelledby="evidence-title">
+              <div class="section-heading"><div><span class="eyebrow">TRACE THE SOURCE</span><h2 id="evidence-title">证据卡</h2></div><span id="evidence-count" class="section-count"></span></div>
+              <p class="section-intro">点击主张中的引用可定位证据。文件名、sheet、字段与行号均来自后端响应。</p>
+              <div id="evidence-container" class="evidence-container"></div>
+            </section>
+
+            <section class="challenge-section" aria-labelledby="challenge-title">
+              <div class="section-heading challenge-heading"><div><span class="eyebrow">BEFORE THE MEETING</span><h2 id="challenge-title">反方校验 <span>/ 还缺什么</span></h2></div><span class="rule-badge">规则辅助 · 非二次模型回答</span></div>
+              <p class="section-intro">把“看起来合理”变成“经得起追问”。检查项由本轮返回字段触发，不会假装完成人工复核。</p>
+              <div class="challenge-grid">
+                <article class="challenge-card counter-card"><div class="challenge-card-title"><span class="challenge-index">A</span><h3>反方会怎么问？</h3></div><div id="counter-checks" class="check-list"></div></article>
+                <article class="challenge-card missing-card"><div class="challenge-card-title"><span class="challenge-index">B</span><h3>进会场前还缺什么？</h3></div><div id="missing-checks" class="check-list"></div></article>
+              </div>
+              <div id="followup-composer" class="followup-composer" hidden><div><strong>追问已放入输入框</strong><p>确认措辞后点击“生成洞察”，将携带当前 thread_id 请求后端。</p></div><button id="focus-followup-button" class="secondary-button" type="button">查看并发送<svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg></button></div>
+            </section>
+
+            <section class="limits-actions-grid" aria-label="回答边界与下一步">
+              <article class="limits-card"><div class="mini-heading"><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><h2>已知边界</h2></div><ul id="limitations-list"></ul></article>
+              <article class="next-card"><div class="mini-heading"><svg class="icon" aria-hidden="true"><use href="#i-arrow"></use></svg><h2>建议下一步</h2></div><ol id="next-steps-list"></ol></article>
+            </section>
+
+            <section id="feedback-section" class="feedback-section" aria-labelledby="feedback-title">
+              <div class="feedback-heading"><div><span class="eyebrow">CLOSE THE LOOP</span><h2 id="feedback-title">这轮洞察，会议怎么用？</h2><p>反馈绑定当前 Run ID。采纳不代表自动执行任何业务动作。</p></div><span id="feedback-saved-badge" class="feedback-saved-badge" hidden></span></div>
+              <div class="feedback-options" role="group" aria-label="选择反馈状态">
+                <button type="button" data-decision="accepted" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-check"></use></svg><span><strong>采纳</strong><small>可带入会议</small></span></button>
+                <button type="button" data-decision="edited" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-edit"></use></svg><span><strong>修改后采纳</strong><small>写下业务修正</small></span></button>
+                <button type="button" data-decision="rejected" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-x"></use></svg><span><strong>驳回</strong><small>说明不适用原因</small></span></button>
+                <button type="button" data-decision="needs_validation" aria-pressed="false"><svg class="icon" aria-hidden="true"><use href="#i-search"></use></svg><span><strong>待验证</strong><small>保留为会後动作</small></span></button>
+              </div>
+              <form id="feedback-form" class="feedback-form" hidden novalidate>
+                <div class="feedback-form-heading"><span id="selected-decision-label"></span><button id="close-feedback" class="text-button" type="button">取消选择</button></div>
+                <label id="feedback-note-label" for="feedback-note">修改说明</label>
+                <textarea id="feedback-note" rows="3" maxlength="2000" placeholder="例如：把“建议加码”改为“先补充一周数据，再决定是否调整预算”。"></textarea>
+                <p id="feedback-note-help" class="field-help">请勿填写直接身份标识；说明会随反馈提交。</p>
+                <p id="feedback-error" class="field-error" role="alert" hidden></p>
+                <div class="feedback-form-actions"><button id="submit-feedback" class="primary-button" type="submit">提交反馈</button><span id="feedback-target" class="feedback-target"></span></div>
+              </form>
+            </section>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="brief-view" class="view-panel brief-view" role="tabpanel" aria-labelledby="tab-brief" hidden>
+      <div class="brief-toolbar">
+        <div><span class="eyebrow">MEETING-READY, NOT TABLE-HEAVY</span><h1>会前一页纸</h1><p id="brief-source-label">正在读取会前内容…</p></div>
+        <div class="brief-toolbar-actions"><button id="sync-current-button" class="secondary-button" type="button" disabled><svg class="icon" aria-hidden="true"><use href="#i-refresh"></use></svg>使用当前洞察</button><button id="print-brief-button" class="primary-button" type="button"><svg class="icon" aria-hidden="true"><use href="#i-print"></use></svg>打印 / 存为 PDF</button></div>
+      </div>
+      <div id="brief-loading" class="brief-loading" role="status"><span class="spinner" aria-hidden="true"></span>读取静态证据快照；它不会被当作模型问答。</div>
+      <div id="brief-error" class="brief-error" role="alert" hidden><svg class="icon" aria-hidden="true"><use href="#i-alert"></use></svg><div><strong>会前快照不可用</strong><p id="brief-error-message"></p></div></div>
+      <article id="brief-paper" class="brief-paper" aria-labelledby="brief-title" hidden>
+        <header class="brief-paper-header"><div><span class="brief-kicker">会前决策简报 · 证据优先</span><h2 id="brief-title"></h2><p id="brief-period"></p></div><div class="brief-stamp"><span id="brief-source-kind"></span><strong id="brief-date"></strong></div></header>
+        <div id="brief-live-context" class="brief-live-context" hidden></div>
+        <div class="brief-grid">
+          <section class="brief-block brief-conclusions"><div class="brief-block-heading"><span>01</span><h3>会议先记住什么</h3></div><div id="brief-claims"></div></section>
+          <section class="brief-block brief-evidence"><div class="brief-block-heading"><span>02</span><h3>凭什么这样说</h3></div><div id="brief-evidence"></div></section>
+          <section class="brief-block brief-counter"><div class="brief-block-heading"><span>03</span><h3>反方校验</h3></div><ul id="brief-counter"></ul></section>
+          <section class="brief-block brief-missing"><div class="brief-block-heading"><span>04</span><h3>还缺什么</h3></div><ul id="brief-missing"></ul></section>
+          <section class="brief-block brief-actions"><div class="brief-block-heading"><span>05</span><h3>会后动作</h3></div><ol id="brief-actions"></ol></section>
+          <section class="brief-block brief-decision"><div class="brief-block-heading"><span>06</span><h3>会议决策栏</h3></div><div id="brief-feedback-summary"></div><div class="decision-lines" aria-label="打印后填写的会议决策"><p><span>负责人</span><i></i></p><p><span>完成时间</span><i></i></p><p><span>会议结论</span><i></i></p></div></section>
+        </div>
+        <footer class="brief-footer"><span><svg class="icon" aria-hidden="true"><use href="#i-shield"></use></svg>事实、推断与建议须分开使用；所有外推均需业务验证。</span><span id="brief-run-reference"></span></footer>
+      </article>
+    </section>
+  </main>
+
+  <footer class="app-footer"><span>收拢 · 让业务只在判断处花时间</span><span>同源 FastAPI · 无外部 CDN / 前端依赖</span></footer>
+  <noscript><div class="noscript">此工作台需要 JavaScript 才能请求后端并展示证据。请启用 JavaScript；静态源码不包含伪造答案。</div></noscript>
+</body>
+</html>

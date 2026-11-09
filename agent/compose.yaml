@@ -1,0 +1,71 @@
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    environment:
+      POSTGRES_DB: audience
+      POSTGRES_USER: audience
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U audience -d audience"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+
+  migrate:
+    build: .
+    command: ["python", "-m", "audience_agent.cli", "migrate"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://audience:${POSTGRES_PASSWORD}@postgres:5432/audience
+      LANGGRAPH_DATABASE_URL: postgresql://audience:${POSTGRES_PASSWORD}@postgres:5432/audience
+      APP_ROOT: /app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  seed:
+    build: .
+    command: ["python", "-m", "audience_agent.cli", "seed"]
+    profiles: ["demo"]
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://audience:${POSTGRES_PASSWORD}@postgres:5432/audience
+      LANGGRAPH_DATABASE_URL: postgresql://audience:${POSTGRES_PASSWORD}@postgres:5432/audience
+      APP_ROOT: /app
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: "no"
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      STORAGE_BACKEND: postgres
+      DATABASE_URL: postgresql://audience:${POSTGRES_PASSWORD}@postgres:5432/audience
+      LANGGRAPH_DATABASE_URL: postgresql://audience:${POSTGRES_PASSWORD}@postgres:5432/audience
+      APP_ROOT: /app
+    ports:
+      - "127.0.0.1:8000:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=64m,noexec,nosuid
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  pgdata:

@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "强人群洞察工作台｜业务与证据治理架构",
+    "locale": "zh-CN",
+    "output": ".archify/architecture-audience-insight-20261105-1505/audience-insight.html",
+    "quality_profile": "showcase"
+  },
+  "components": [
+    {"id":"owner","type":"external","label":"项目负责人","sublabel":"第一使用者 · 日/周会前","pos":[40,280],"size":[160,76],"icon":"person"},
+    {"id":"workspace","type":"frontend","label":"会前一页纸工作台","sublabel":"提问 · 证据 · 追问 · 四键反馈","pos":[300,280],"size":[190,82],"icon":"frontend"},
+    {"id":"api","type":"backend","label":"FastAPI 业务接口","sublabel":"workspace授权 · 总deadline","pos":[650,280],"size":[175,80],"icon":"backend"},
+    {"id":"graph","type":"backend","label":"单图洞察流程","sublabel":"路由 → 检索 → 生成 → 引用校验","pos":[1000,280],"size":[190,82],"icon":"backend"},
+    {"id":"repository","type":"backend","label":"受控证据仓储","sublabel":"跨域检索 · 版本绑定 · 反馈关联","pos":[1350,280],"size":[185,82],"icon":"database"},
+    {"id":"postgres","type":"database","label":"PostgreSQL","sublabel":"证据 / 版本 / 运行 / 反馈","pos":[1350,520],"size":[170,80],"icon":"database"},
+    {"id":"raw","type":"external","label":"M1–M6 原始材料","sublabel":"Excel / Word · 脱敏虚构","pos":[600,40],"size":[185,78],"icon":"external"},
+    {"id":"external","type":"external","label":"外部公开信号（可选）","sublabel":"来源 · 采集时间 · 权限状态","pos":[600,175],"size":[195,78],"icon":"external"},
+    {"id":"ingest","type":"backend","label":"原始导入与校验","sublabel":"schema · 单位 · 去重 · 行级血缘","pos":[950,40],"size":[190,80],"icon":"security"},
+    {"id":"steward","type":"security","label":"数据负责人激活","sublabel":"staged审校 → active不可变","pos":[1350,40],"size":[185,80],"icon":"security"},
+    {"id":"model","type":"backend","label":"模型适配器","sublabel":"DeterministicMock / OpenAI Responses","pos":[800,520],"size":[200,82],"icon":"backend"}
+  ],
+  "connections": [
+    {"id":"owner-workspace","from":"owner","to":"workspace","label":"会前3步约6分钟","variant":"emphasis"},
+    {"id":"workspace-api","from":"workspace","to":"api","label":"提问 / 追问 / 反馈","variant":"emphasis"},
+    {"id":"api-graph","from":"api","to":"graph","label":"授权问题 + 硬上限"},
+    {"id":"graph-repository","from":"graph","to":"repository","label":"受控检索；无证据则拒答"},
+    {"id":"repository-postgres","from":"repository","to":"postgres","label":"active version参数化查询"},
+    {"id":"api-repository-feedback","from":"api","to":"repository","label":"反馈绑定run/thread/version","variant":"dashed","fromSide":"bottom","toSide":"right","via":[[737.5,660],[1590,660],[1590,321]],"labelAt":[1180,640]},
+    {"id":"raw-ingest","from":"raw","to":"ingest","label":"原始文件 + SHA256"},
+    {"id":"external-ingest","from":"external","to":"ingest","label":"合法采集；缺失标未知","variant":"dashed"},
+    {"id":"ingest-steward","from":"ingest","to":"steward","label":"清洗报告 + 证据血缘"},
+    {"id":"steward-repository","from":"steward","to":"repository","label":"人工激活版本","variant":"security"},
+    {"id":"graph-model","from":"graph","to":"model","label":"仅发送受控证据","fromSide":"bottom","toSide":"top"},
+    {"id":"model-graph","from":"model","to":"graph","label":"结构化主张；无效引用拒答","variant":"dashed","fromSide":"left","toSide":"bottom"}
+  ],
+  "cards": [
+    {"dot":"cyan","title":"AI 负责","items":["整合数据、比较信号、生成候选假设","展示来源、不确定性、反例与下一步"]},
+    {"dot":"emerald","title":"人负责","items":["产品事实与异常复核","资源投入、内容终审和经营决策"]},
+    {"dot":"rose","title":"采用与降级","items":["不增加日常录入；四键完成反馈","数据不可得→标未知；证据不足→abstain"]}
+  ]
+}

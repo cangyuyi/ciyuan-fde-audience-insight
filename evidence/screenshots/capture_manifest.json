@@ -1,0 +1,42 @@
+{
+  "captured_at": "2026-11-05T16:44:13.196630+08:00",
+  "browser": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "mode": "headless Chrome against the live local FastAPI prototype",
+  "shots": [
+    {
+      "file": "01_会前工作台.png",
+      "url": "http://127.0.0.1:8000/prototype/",
+      "width": 1440,
+      "height": 1000,
+      "bytes": 130152
+    },
+    {
+      "file": "02_首问与证据.png",
+      "url": "http://127.0.0.1:8000/prototype/?autorun=1&question=%E8%AF%B7%E8%81%94%E5%90%88%E5%93%81%E7%89%8CA%E7%9A%84Gen+Z%E7%94%BB%E5%83%8F%E3%80%81%E7%A9%BF%E7%9D%80%E4%BD%93%E9%AA%8C%E3%80%81%E5%B1%A5%E7%BA%A6%E4%BF%A1%E5%8F%B7%E5%92%8C%E4%B8%93%E5%AE%B6%E8%A7%82%E7%82%B9%EF%BC%8C%E5%BD%A2%E6%88%90%E5%8F%AF%E8%BF%BD%E6%BA%AF%E7%9A%84%E4%BA%BA%E7%BE%A4%E5%81%87%E8%AE%BE%EF%BC%9B%E6%BC%BEYOUNG%E5%BA%94%E5%A6%82%E4%BD%95%E9%AA%8C%E8%AF%81%EF%BC%9F",
+      "width": 1440,
+      "height": 2400,
+      "bytes": 414566
+    },
+    {
+      "file": "03_同线程追问与反方校验.png",
+      "url": "http://127.0.0.1:8000/prototype/?scenario=full",
+      "width": 1440,
+      "height": 2400,
+      "bytes": 622030
+    },
+    {
+      "file": "04_反馈待验证.png",
+      "url": "http://127.0.0.1:8000/prototype/?scenario=feedback&decision=needs_validation",
+      "width": 1440,
+      "height": 2400,
+      "bytes": 363630
+    },
+    {
+      "file": "05_会前一页纸.png",
+      "url": "http://127.0.0.1:8000/prototype/?view=brief",
+      "width": 1440,
+      "height": 2400,
+      "bytes": 642540
+    }
+  ]
+}

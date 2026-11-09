@@ -1,0 +1,6 @@
+FROM pgvector/pgvector:0.8.7-pg18
+USER root
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-contrib \
+    && rm -rf /var/lib/apt/lists/*
+# The upstream entrypoint remains responsible for dropping privileges to postgres.
